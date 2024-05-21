@@ -1,13 +1,13 @@
 // make it class for api's calls, 
 // why not uses OOps here ?
 let skip=30
-const ApiUrl = `https://dummyjson.com/products`;
+const ApiUrl = `https://dummyjson.com/products?`;
 let Products = [];
 let FilteredProducts = [];
 let TempProducts = []
 let Cart = [];
 let CurrentPage = 1;
-let ItemsPerPage = 10;
+let ItemsPerPage=30
 const data = new Map();
 
 function CheckProductInLocalStorage(key){
@@ -19,13 +19,15 @@ class ApiCallClass {
         this.ApiUrl = ApiUrl;
     }
  
-    async getData(ItemsPerPage) {
+    async getData() {
         try {
-            const temp = `https://dummyjson.com/products?$limit=${ItemsPerPage}`
+            console.log(Number(ItemsPerPage))
+            const temp = `https://dummyjson.com/products`
             const response = await fetch(temp);
             const data = await response.json();
             Products = data.products;
             FilteredProducts = Products;
+            console.log(FilteredProducts.length)
             TempProducts.push(Products);
             renderProducts();
             renderPagination();
@@ -85,7 +87,6 @@ function renderProducts() {
     const start = (CurrentPage - 1) * ItemsPerPage;
     const end = start + ItemsPerPage;
     const currentProducts = FilteredProducts.slice(start, end);
-    console.log(currentProducts,"currentProducts")
     currentProducts.forEach(product => {
         const productElement = document.createElement('div');
         let CheckAvail = CheckProductInLocalStorage(product.id);
