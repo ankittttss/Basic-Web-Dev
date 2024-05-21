@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartItems();
 });
 
+function remove(id){
+    localStorage.removeItem(id);
+    console.log("Removed")
+    renderCartItems()
+}
+
 function renderCartItems() {
     const cartItemsContainer = document.getElementById('cart-items');
     cartItemsContainer.innerHTML = ''; // Clear previous items
@@ -18,14 +24,15 @@ function renderCartItems() {
         // Loop through each cart item and create DOM elements
         cartItems.forEach(item => {
             const parsedItem = JSON.parse(item);
-            console.log(parsedItem)
             const cartItem = document.createElement('div');
             cartItem.classList.add('cart-item');
             cartItem.innerHTML = `
-            <img src="${item.thumbnail}" alt="${item.title}">
+            <img src="${parsedItem.thumbnail}" alt="${item.title}">
                 <div class="item-details">
                     <h3>${parsedItem.title}</h3>
                     <p>$${parsedItem.price}</p>
+                    <p>$${parsedItem.description}</p>
+                    <button class = "redirect-button" id="${parsedItem.id}" onclick="remove(${parsedItem.id})">Remove From Cart</button>
                 </div>
             `;
             cartItemsContainer.appendChild(cartItem);

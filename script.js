@@ -10,6 +10,10 @@ let CurrentPage = 1;
 let ItemsPerPage = 10;
 const data = new Map();
 
+function CheckProductInLocalStorage(key){
+    return localStorage.getItem(key)!=null
+}
+
 class ApiCallClass {
     constructor(ApiUrl) {
         this.ApiUrl = ApiUrl;
@@ -84,8 +88,10 @@ function renderProducts() {
     console.log(currentProducts,"currentProducts")
     currentProducts.forEach(product => {
         const productElement = document.createElement('div');
+        let CheckAvail = CheckProductInLocalStorage(product.id);
         productElement.className = 'product';
         productElement.id = `${product.id}`
+        if(CheckAvail != true){
         productElement.innerHTML = `
             <img src="${product.thumbnail}" alt="${product.title}">
             <h3>${product.title}</h3>
@@ -93,8 +99,20 @@ function renderProducts() {
             <p>${product.description}</p>
             <button id="${product.id}" onclick="addToCart(${product.id})">Add to Cart</button>
         `;
-        // console.log(productElement)
         productContainer.appendChild(productElement);
+        }
+
+        else{ 
+            productElement.innerHTML = `
+            <img src="${product.thumbnail}" alt="${product.title}">
+            <h3>${product.title}</h3>
+            <p>$${product.price}</p>
+            <p>${product.description}</p>
+            <button class = "disabled" id="${product.id}" onclick="addToCart(${product.id})">Added in Cart</button>
+        `;
+        productContainer.appendChild(productElement);
+        }
+        // console.log(productElement)
     });
 }
 
@@ -182,7 +200,6 @@ function addToCart(productId) {
 document.getElementById('btn').onclick = function(){
     location.href = "cart.html"
 }
-
 
 
 const Api = new ApiCallClass(ApiUrl);
