@@ -19,9 +19,9 @@ class ApiCallClass {
         this.ApiUrl = ApiUrl;
     }
  
-    async getData() {
+    async getData(ItemsPerPage) {
         try {
-            const temp = `https://dummyjson.com/products`
+            const temp = `https://dummyjson.com/products?$limit=${ItemsPerPage}`
             const response = await fetch(temp);
             const data = await response.json();
             Products = data.products;
@@ -130,6 +130,7 @@ function renderPagination() {
     itemsPerPageDropdown.addEventListener('change', (event) => {
         ItemsPerPage = parseInt(event.target.value, 10);
         CurrentPage = 1; // Reset to the first page when items per page change
+        Api.getData(ItemsPerPage);
         renderProducts();
         renderPagination();
     });
@@ -153,12 +154,17 @@ function renderPagination() {
     for (let i = 1; i <= pageCount; i++) {
         const button = document.createElement('button');
         button.textContent = i;
+        button.addEventListener('click',()=>{
+            fetchProducts()
+            renderProducts()
+        })
         if (i === CurrentPage) {
             button.style.fontWeight = 'bold';
             button.style.backgroundColor = 'grey';
         }
         button.addEventListener('click', () => {
             CurrentPage = i;
+            Api.getData(ItemsPerPage)
             renderProducts();
             renderPagination();
         });
@@ -200,6 +206,7 @@ function addToCart(productId) {
 document.getElementById('btn').onclick = function(){
     location.href = "cart.html"
 }
+
 
 
 const Api = new ApiCallClass(ApiUrl);
